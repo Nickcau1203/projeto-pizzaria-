@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Pizzaria</title>
+</head>
+
+<body>
+    <h2>Bem-Vindo, <%= usuario.nome %>!</h2>
+    <a href="/logout">Sair</a>
+
+    <h3>🔍 Buscar Pizza</h3>
+    <form method="GET" action="dashboard">
+        <input name="busca" placeholder="Buscar por nome" value="<%= busca %>">
+        <button type="submit">Buscar</button>
+    </form>
+
+    <h3>🍕 Cadastrar Pizza</h3>
+    <form method="POST" action="/pizzas">
+        <input name="nome" placeholder="Nome da Pizza" required>
+        <input name="preco" type="number" step="0.01" placeholder="Preço" required>
+        <input name="estoque" type="number" placeholder="Estoque" value="10">
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <h3>📋 Pizzas</h3>
+    <ul>
+        <% pizzas.forEach(l=> {%>
+            <li>
+                <strong>
+                    <%= l.nome %>
+                </strong> - R$ <%= l.preco %> (Estoque: <%= l.estoque %>)
+                        <% if (l.estoque < 5) { %> ⚠️ <b>Estoque Baixo!</b>}
+                           <% } %>
+                               <form method="POST" action="/pizzas/update/<%= l.id %>">
+                                <input name="nome" value="<%= l.nome %>" required>
+                                <input name="preco" type="number" step="0.01" value="<%= l.preco %>" required>
+                                <input name="estoque" type="number" value="<%= l.estoque %>">
+                                <button type="submit">Salvar</button>
+                               </form>
+                               <form>
+                                    <button type="submit">Excluir</button>
+                               </form>
+            </li>
+            <% }) %>
+    </ul>
+
+    <h3>💸 Registrar Venda</h3>
+    <form method="post" action="/vendas">
+        <select name="pizza_id">
+            <% pizzas.forEach(l=> { %>
+                <option value="<%= l.id %>">
+                    <%= l.nome %>
+                </option>
+                 <% }) %>
+        </select>
+        <input type="number" name="quantidade" value="1" min="1">
+        <button type="submit">Vender</button>
+    </form>
+    
+    <h3>🧾 Últimas Vendas</h3>
+    <ul>
+        <% vendas.forEach(v=> { %>
+            <li>
+                <%= v.usuario %> vendeu <%= v.quantidade %>x <%= v.pizza %> - <%= v.data %>
+            </li>
+           <% }) %>
+    </ul>
+</body>
+
+</html>
